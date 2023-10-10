@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Payments\Status;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class StorepaymentRequest extends FormRequest
 {
@@ -22,7 +24,9 @@ class StorepaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'amount' => ['required', 'numeric'],
+            'status' => ['required', new Enum(Status::class)],
+            'currency' => ['required'],
         ];
     }
 }

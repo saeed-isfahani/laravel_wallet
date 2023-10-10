@@ -45,7 +45,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function payment()
+    public function Payment()
     {
         return $this->hasMany(Payment::class);belongsTo
     }

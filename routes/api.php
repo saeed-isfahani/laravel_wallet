@@ -21,5 +21,4 @@ use App\Http\Controllers\PaymentController;
 
 Route::prefix('v1')->group(function () {
     Route::post('/payment', [PaymentController::class, 'store']);
-    // Route::resource('products', ProductController::class);
 });

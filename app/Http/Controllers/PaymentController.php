@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
-use App\Models\payment;
+use App\Models\Payment;
 
 class PaymentController extends Controller
 {
@@ -29,14 +29,13 @@ class PaymentController extends Controller
      */
     public function store(StorepaymentRequest $request)
     {
-        StorepaymentRequest::create($request);
-        // dd('saeed');
+        return Payment::create($request->all());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(payment $payment)
+    public function show(Payment $payment)
     {
         //
     }
@@ -44,7 +43,7 @@ class PaymentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(payment $payment)
+    public function edit(Payment $payment)
     {
         //
     }
@@ -52,7 +51,7 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatepaymentRequest $request, payment $payment)
+    public function update(UpdatepaymentRequest $request, Payment $payment)
     {
         //
     }
@@ -60,7 +59,7 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(payment $payment)
+    public function destroy(Payment $payment)
     {
         //
     }

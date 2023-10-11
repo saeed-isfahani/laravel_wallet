@@ -1,1 +1,1 @@
-he you, {{ $payment->unique_id }}
+hey you, {{ $payment->unique_id }}, message: {{ $text }}

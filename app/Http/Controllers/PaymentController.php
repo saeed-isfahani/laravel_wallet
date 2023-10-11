@@ -6,8 +6,7 @@ use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\Payment;
 use App\Traits\ApiResponse;
-use App\Mail\RejectPayment;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendRejectPaymentNotify;
 
 class PaymentController extends Controller
 {
@@ -34,7 +33,8 @@ class PaymentController extends Controller
     public function store(StorepaymentRequest $request)
     {
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
-            Mail::to($payment->user->email)->send(new RejectPayment($payment));
+            $text = 'test';
+            SendRejectPaymentNotify::dispatch($payment, $text);
             return $this->successResponse($payment, __('payment.messages.create_successfull'), 201);
         }
     }

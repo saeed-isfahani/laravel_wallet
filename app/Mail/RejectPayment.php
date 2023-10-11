@@ -16,7 +16,7 @@ class RejectPayment extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private $payment)
+    public function __construct(public $payment, public $text)
     {
         //
     }
@@ -38,7 +38,10 @@ class RejectPayment extends Mailable
     {
         return new Content(
             view: 'mail.reject-payment',
-            with: ['payment' => $this->payment]
+            with: [
+                'payment' => $this->payment,
+                'text' => $this->text
+            ]
         );
     }
 

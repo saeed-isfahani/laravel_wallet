@@ -5,9 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\Payment;
+use App\Traits\ApiResponse;
+use App\Mail\RejectPayment;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +33,10 @@ class PaymentController extends Controller
      */
     public function store(StorepaymentRequest $request)
     {
-        return Payment::create($request->all());
+        if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
+            Mail::to($payment->user->email)->send(new RejectPayment($payment));
+            return $this->successResponse($payment, __('payment.messages.create_successfull'), 201);
+        }
     }
 
     /**

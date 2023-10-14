@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('payment_id')->references('id')->on('payments');
             $table->double('amount');
+            $table->string('currency');
+            $table->double('balance');
             $table->timestamps();
         });
     }

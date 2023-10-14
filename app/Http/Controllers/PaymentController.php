@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ApprovePaymentEvent;
 use App\Events\RejectPayment;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\Payment;
+use App\Models\Transaction;
 use App\Traits\ApiResponse;
 use App\Jobs\SendRejectPaymentNotify;
 
@@ -35,7 +37,8 @@ class PaymentController extends Controller
     {
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
             // $text = 'test';
-            RejectPayment::dispatch($payment);
+            ApprovePaymentEvent::dispatch($payment);
+            // RejectPayment::dispatch($payment);
             // SendRejectPaymentNotify::dispatch($payment, $text);
             return $this->successResponse($payment, __('payment.messages.create_successfull'), 201);
         }

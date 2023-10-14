@@ -16,7 +16,7 @@ class RejectPayment extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public $payment, public $text)
+    public function __construct(public $payment, public $text = null)
     {
         //
     }

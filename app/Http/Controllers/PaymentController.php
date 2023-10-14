@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RejectPayment;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
 use App\Models\Payment;
@@ -33,8 +34,9 @@ class PaymentController extends Controller
     public function store(StorepaymentRequest $request)
     {
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
-            $text = 'test';
-            SendRejectPaymentNotify::dispatch($payment, $text);
+            // $text = 'test';
+            RejectPayment::dispatch($payment);
+            // SendRejectPaymentNotify::dispatch($payment, $text);
             return $this->successResponse($payment, __('payment.messages.create_successfull'), 201);
         }
     }

@@ -19,7 +19,7 @@ class SendRejectPaymentNotify implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public Payment $payment, public $text)
+    public function __construct(public Payment $payment, public $text = null)
     {
         // 
     }

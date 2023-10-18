@@ -19,7 +19,7 @@ use App\Http\Controllers\PaymentController;
 //     return $request->user();
 // });
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('localization')->group(function () {
     Route::post('/payment', [PaymentController::class, 'store']);
     Route::get('/payment/{unique_id}', [PaymentController::class, 'show']);
     Route::get('/payment', [PaymentController::class, 'index']);

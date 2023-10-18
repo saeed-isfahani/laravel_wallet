@@ -21,7 +21,7 @@ class ApprovePaymentTransactionListener implements ShouldQueue
      */
     public function handle(object $event): void
     {
-        $balance = Transaction::where('user_id', 1)->sum('amount');
+        $balance = Transaction::where('user_id', $event->payment->user_id)->sum('amount');
         $transactionData = [
             'user_id' => 1,
             'payment_id' => $event->payment->id,

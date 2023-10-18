@@ -19,7 +19,7 @@ return new class extends Migration
             $table->double('amount');
             $table->enum('status', Status::values());
             $table->string('currency');
-            $table->date('status_update_at')->nullable(true);
+            $table->timestamp('status_update_at')->nullable(true);
             $table->foreignId('status_update_by')->nullable(true)->references('id')->on('users');
             $table->timestamps();
         });

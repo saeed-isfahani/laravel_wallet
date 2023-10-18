@@ -10,19 +10,17 @@ return [
     |
     */
 
-    'enumes' => [
-        
-    ],
+    'enumes' => [],
     'messages' => [
         'create_successfull' => 'payment created successfully',
         'approve_successfull' => 'payment approved successfully',
-        'reject_successfull' => 'payment rejected successfully'
+        'reject_successfull' => 'payment rejected successfully',
+        'found_successfull' => 'payment founded successfully'
     ],
-    'validations' => [
-        
-    ],
+    'validations' => [],
     'errors' => [
-        
+        'not_found' => 'payment not found',
+        'not_pending' => 'payment is not in pending status'
     ],
 
 ];

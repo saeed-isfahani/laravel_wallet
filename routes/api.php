@@ -21,4 +21,8 @@ use App\Http\Controllers\PaymentController;
 
 Route::prefix('v1')->group(function () {
     Route::post('/payment', [PaymentController::class, 'store']);
+    Route::get('/payment/{unique_id}', [PaymentController::class, 'show']);
+    Route::get('/payment', [PaymentController::class, 'index']);
+    Route::patch('/payment/{unique_id}/approve', [PaymentController::class, 'approve']);
+    Route::patch('/payment/{unique_id}/reject', [PaymentController::class, 'reject']);
 });

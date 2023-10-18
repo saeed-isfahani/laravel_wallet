@@ -7,11 +7,14 @@ use App\Events\CreatePaymentEvent;
 use App\Events\RejectPaymentEvent;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
+use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Traits\ApiResponse;
 use App\Jobs\SendRejectPaymentNotify;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -21,15 +24,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $payments = Payment::paginate();
+        return $this->successResponse(new PaymentCollection($payments), 200);
     }
 
     /**
@@ -38,7 +34,6 @@ class PaymentController extends Controller
     public function store(StorepaymentRequest $request)
     {
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
-            // $text = 'test';
             CreatePaymentEvent::dispatch($payment);
             // RejectPaymentEvent::dispatch($payment);
             // SendRejectPaymentNotify::dispatch($payment, $text);
@@ -49,32 +44,56 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment $payment)
+    public function show(String $uniqueId)
     {
-        //
+        $payment = Payment::firstWhere('unique_id', $uniqueId);
+        if ($payment) {
+            return $this->successResponse(new PaymentResource($payment), __('payment.messages.found_successfull'), 200);
+        }
+        return $this->successResponse([], __('payment.errors.not_found'), 404);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * approve the specified Payment from storage.
      */
-    public function edit(Payment $payment)
+    public function approve(String $uniqueId)
     {
-        //
+        $payment = Payment::firstWhere('unique_id', $uniqueId);
+
+        if (!$payment) {
+            return $this->successResponse([], __('payment.errors.not_found'), 404);
+        }
+
+        if ($payment->status->value != 'pending') {
+            return $this->successResponse([], __('payment.errors.not_pending'), 400);
+        }
+        $payment->status = 'approved';
+        $payment->status_update_at = Carbon::now();
+        $payment->status_update_by = 1;
+        $payment->save();
+        ApprovePaymentEvent::dispatch($payment);
+        return $this->successResponse(new PaymentResource($payment), __('payment.messages.approve_successfull'), 200);
     }
 
     /**
-     * Update the specified resource in storage.
+     * reject the specified Payment from storage.
      */
-    public function update(UpdatepaymentRequest $request, Payment $payment)
+    public function reject(String $uniqueId)
     {
-        //
-    }
+        $payment = Payment::firstWhere('unique_id', $uniqueId);
+        if (!$payment) {
+            return $this->successResponse([], __('payment.errors.not_found'), 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payment $payment)
-    {
-        //
+        if ($payment->status->value != 'pending') {
+            return $this->successResponse([], __('payment.errors.not_pending'), 400);
+        }
+
+        $payment->status = 'rejected';
+        $payment->status_update_at = Carbon::now();
+        $payment->status_update_by = 1;
+        $payment->save();
+        RejectPaymentEvent::dispatch($payment);
+        return $this->successResponse(new PaymentResource($payment), __('payment.messages.reject_successfull'), 200);
     }
 }

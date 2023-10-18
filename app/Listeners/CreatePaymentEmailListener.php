@@ -2,10 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Mail\CreatePaymentMail;
+use App\Jobs\SendCreatePaymentNotify;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Mail;
 
 class CreatePaymentEmailListener implements ShouldQueue
 {
@@ -20,8 +19,8 @@ class CreatePaymentEmailListener implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(CreatePaymentMail $event): void
+    public function handle(object $event): void
     {
-        Mail::to($event->payment->user->email)->send(new CreatePaymentMail($event->payment));
+        SendCreatePaymentNotify::dispatch($event->payment);
     }
 }

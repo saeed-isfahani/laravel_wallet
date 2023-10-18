@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use app\Enums\Payments\Status;
+use App\Enums\Payments\Status;
 use Illuminate\Support\Str;
 
 class Payment extends Model

@@ -1,1 +1,1 @@
-hey you, {{ $payment->unique_id }}, message: {{ $text }}
+payment created with {{ $payment->unique_id }} id

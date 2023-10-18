@@ -1,1 +1,1 @@
-hey you, {{ $payment->unique_id }}, message: {{ $text }}
+payment rejected with {{ $payment->unique_id }} id

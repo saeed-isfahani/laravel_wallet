@@ -2,8 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Jobs\SendRejectPaymentNotify;
-use App\Mail\RejectPaymentMail;
+use App\Jobs\SendApprovePaymentNotify;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -23,6 +22,6 @@ class ApprovePaymentEmailListener
      */
     public function handle(object $event): void
     {
-        SendRejectPaymentNotify::dispatch($event->payment);
+        SendApprovePaymentNotify::dispatch($event->payment);
     }
 }

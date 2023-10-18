@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\ApprovePaymentEvent;
-use App\Events\RejectPayment;
+use App\Events\CreatePaymentEvent;
+use App\Events\RejectPaymentEvent;
 use App\Http\Requests\StorepaymentRequest;
 use App\Http\Requests\UpdatepaymentRequest;
+use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Traits\ApiResponse;
@@ -37,10 +39,10 @@ class PaymentController extends Controller
     {
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
             // $text = 'test';
-            ApprovePaymentEvent::dispatch($payment);
-            // RejectPayment::dispatch($payment);
+            CreatePaymentEvent::dispatch($payment);
+            // RejectPaymentEvent::dispatch($payment);
             // SendRejectPaymentNotify::dispatch($payment, $text);
-            return $this->successResponse($payment, __('payment.messages.create_successfull'), 201);
+            return $this->successResponse(new PaymentResource($payment), __('payment.messages.create_successfull'), 201);
         }
     }
 

@@ -14,7 +14,9 @@ return [
         
     ],
     'messages' => [
-        'create_successfull' => 'payment created successfully'
+        'create_successfull' => 'payment created successfully',
+        'approve_successfull' => 'payment approved successfully',
+        'reject_successfull' => 'payment rejected successfully'
     ],
     'validations' => [
         

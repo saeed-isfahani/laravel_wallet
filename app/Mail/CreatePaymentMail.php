@@ -9,14 +9,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RejectPayment extends Mailable implements ShouldQueue
+class CreatePaymentMail extends Mailable  implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public $payment, public $text = null)
+    public function __construct(public $payment)
     {
         //
     }
@@ -27,7 +27,7 @@ class RejectPayment extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reject Payment',
+            subject: 'Create Payment',
         );
     }
 
@@ -37,10 +37,9 @@ class RejectPayment extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'mail.reject-payment',
+            view: 'mail.create-payment',
             with: [
                 'payment' => $this->payment,
-                'text' => $this->text
             ]
         );
     }

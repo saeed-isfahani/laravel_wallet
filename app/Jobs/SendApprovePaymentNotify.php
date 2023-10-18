@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\RejectPaymentMail;
+use App\Mail\ApprovePaymentMail;
 use App\Models\Payment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendRejectPaymentNotify implements ShouldQueue
+class SendApprovePaymentNotify implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -21,7 +21,7 @@ class SendRejectPaymentNotify implements ShouldQueue
      */
     public function __construct(public Payment $payment)
     {
-        // 
+        //
     }
 
     /**
@@ -29,6 +29,6 @@ class SendRejectPaymentNotify implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->payment->user->email)->send(new RejectPaymentMail($this->payment));
+        Mail::to($this->payment->user->email)->send(new ApprovePaymentMail($this->payment));
     }
 }

@@ -6,15 +6,12 @@ use App\Events\ApprovePaymentEvent;
 use App\Events\CreatePaymentEvent;
 use App\Events\RejectPaymentEvent;
 use App\Http\Requests\StorepaymentRequest;
-use App\Http\Requests\UpdatepaymentRequest;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
-use App\Models\Transaction;
 use App\Traits\ApiResponse;
-use App\Jobs\SendRejectPaymentNotify;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class PaymentController extends Controller
 {
@@ -50,7 +47,7 @@ class PaymentController extends Controller
         if ($payment) {
             return $this->successResponse(new PaymentResource($payment), __('payment.messages.found_successfull'), 200);
         }
-        return $this->successResponse([], __('payment.errors.not_found'), 404);
+        throw new BadRequestException(__('payment.errors.not_found'), 400);
     }
 
     /**
@@ -61,11 +58,11 @@ class PaymentController extends Controller
         $payment = Payment::firstWhere('unique_id', $uniqueId);
 
         if (!$payment) {
-            return $this->successResponse([], __('payment.errors.not_found'), 404);
+            throw new BadRequestException(__('payment.errors.not_found'), 400);
         }
 
         if ($payment->status->value != 'pending') {
-            return $this->successResponse([], __('payment.errors.not_pending'), 400);
+            throw new BadRequestException(__('payment.errors.not_pending'), 400);
         }
         $payment->status = 'approved';
         $payment->status_update_at = Carbon::now();
@@ -82,11 +79,11 @@ class PaymentController extends Controller
     {
         $payment = Payment::firstWhere('unique_id', $uniqueId);
         if (!$payment) {
-            return $this->successResponse([], __('payment.errors.not_found'), 404);
+            throw new BadRequestException(__('payment.errors.not_found'), 400);
         }
 
         if ($payment->status->value != 'pending') {
-            return $this->successResponse([], __('payment.errors.not_pending'), 400);
+            throw new BadRequestException(__('payment.errors.not_pending'), 400);
         }
 
         $payment->status = 'rejected';

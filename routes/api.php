@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CurrencyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
@@ -25,4 +26,6 @@ Route::prefix('v1')->middleware('localization')->group(function () {
     Route::get('/payment', [PaymentController::class, 'index']);
     Route::patch('/payment/{unique_id}/approve', [PaymentController::class, 'approve']);
     Route::patch('/payment/{unique_id}/reject', [PaymentController::class, 'reject']);
+    Route::post('/currency', [CurrencyController::class, 'store']);
+    Route::get('/currency', [CurrencyController::class, 'index']);
 });

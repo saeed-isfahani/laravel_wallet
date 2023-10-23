@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
 
 class ApprovePaymentTransactionListener implements ShouldQueue
 {
@@ -21,7 +23,10 @@ class ApprovePaymentTransactionListener implements ShouldQueue
      */
     public function handle(object $event): void
     {
-        $balance = Transaction::where('user_id', $event->payment->user_id)->sum('amount');
+        DB::beginTransaction();
+        $transactionOwner = User::find($event->payment->user_id);
+        $balance = $transactionOwner->getBalance($event->payment->user_id);
+        $transactionOwner->transactions()->lockForUpdate();
         $transactionData = [
             'user_id' => 1,
             'payment_id' => $event->payment->id,
@@ -30,5 +35,6 @@ class ApprovePaymentTransactionListener implements ShouldQueue
             'balance' => ($balance + $event->payment->amount)
         ];
         Transaction::create($transactionData);
+        DB::commit();
     }
 }

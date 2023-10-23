@@ -32,8 +32,6 @@ class PaymentController extends Controller
     {
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
             CreatePaymentEvent::dispatch($payment);
-            // RejectPaymentEvent::dispatch($payment);
-            // SendRejectPaymentNotify::dispatch($payment, $text);
             return $this->successResponse(new PaymentResource($payment), __('payment.messages.create_successfull'), 201);
         }
     }

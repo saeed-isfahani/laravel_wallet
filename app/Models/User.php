@@ -8,6 +8,7 @@ use Faker\Provider\ar_EG\Payment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -25,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'balance'
     ];
 
     /**
@@ -76,7 +78,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Transaction::class);
     }
 
-    public function updateBalance()
+    public function updateBalance(): collection
     {
         $totalAmount = $this->transactions()
             ->select('currency', DB::raw('SUM(amount) as total_amount'))

@@ -12,6 +12,7 @@ use App\Models\Payment;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class PaymentController extends Controller
 {
@@ -30,6 +31,15 @@ class PaymentController extends Controller
      */
     public function store(StorepaymentRequest $request)
     {
+        $paymentLimitationTime = 5;
+        $lastPayment = Payment::where('user_id', $request->user_id)
+            ->where('currency', $request->currency)
+            ->where('created_at', '>', Carbon::now()->subMinutes($paymentLimitationTime)->toDateTimeString())
+            ->first();
+        if ($lastPayment) {
+            throw new BadRequestException(__('payment.errors.payment_creation_time_limit', ['currency' => $request->currency, 'minute' => $paymentLimitationTime]), 400);
+        }
+
         if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
             CreatePaymentEvent::dispatch($payment);
             return $this->successResponse(new PaymentResource($payment), __('payment.messages.create_successfull'), 201);

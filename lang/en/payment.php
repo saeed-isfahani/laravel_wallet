@@ -20,7 +20,8 @@ return [
     'validations' => [],
     'errors' => [
         'not_found' => 'payment not found',
-        'not_pending' => 'payment is not in pending status'
+        'not_pending' => 'payment is not in pending status',
+        'payment_creation_time_limit' => 'a payment in :currency created less than :minute minutes ago for this user, try again later please'
     ],
 
 ];

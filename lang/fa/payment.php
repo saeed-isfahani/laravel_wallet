@@ -20,7 +20,8 @@ return [
     'validations' => [],
     'errors' => [
         'not_found' => 'پرداخت پیدا نشد',
-        'not_pending' => 'پرداخت در وضعیت معلق نیست'
+        'not_pending' => 'پرداخت در وضعیت معلق نیست',
+        'payment_creation_time_limit' => 'یک پرداخت در واحد :currency در کمتر از :minute دقیقه پیش برای این کاربر ثبت شده است, لطفا بعدا دوباره تلاش کنید'
     ],
 
 ];

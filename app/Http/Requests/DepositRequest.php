@@ -22,10 +22,10 @@ class DepositRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from_user' => ['required', 'numeric'],
-            'to_user' => ['required', 'numeric'],
-            'amount' => ['required', 'numeric'],
-            'currency' => ['required', 'string']
+            'from_user' => ['required', 'exists:users,id'],
+            'to_user' => ['required', 'different:from', 'exists:users,id'],
+            'amount' => ['required', 'numeric', 'between:1,9999999999999'],
+            'currency_key' => ['required', 'exists:currencies,key']
         ];
     }
 }

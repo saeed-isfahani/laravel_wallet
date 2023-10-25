@@ -2,7 +2,7 @@
 
 namespace App\Http\Swagger\Api\V1;
 
-
+// TODO change it to controller interface (laravel contracts) and move these codes to it
 class PaymentController
 {
     /**
@@ -85,9 +85,9 @@ class PaymentController
      *            mediaType="multipart/form-data",
      *            @OA\Schema(
      *                  type="object",
-     *                  required={"amount","currency"},
+     *                  required={"amount","currency_key"},
      *                  @OA\Property(property="amount", type="text"),
-     *                  @OA\Property(property="currency", type="text"),
+     *                  @OA\Property(property="currency_key", type="text"),
      *            ),
      *        ),
      *    ),

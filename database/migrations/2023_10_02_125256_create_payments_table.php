@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\Payments\Status;
+use App\Enums\Payments\PaymentStatus;
 
 return new class extends Migration
 {
@@ -14,11 +14,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->uuid('unique_id')->nullable(true);
+            $table->uuid('unique_id');
             $table->foreignId('user_id')->nullable(true)->references('id')->on('users');
             $table->double('amount');
-            $table->enum('status', Status::values());
-            $table->string('currency');
+            $table->enum('status', PaymentStatus::values())->default(PaymentStatus::PENDING);
+            $table->string('currency_key');
             $table->timestamp('status_update_at')->nullable(true);
             $table->foreignId('status_update_by')->nullable(true)->references('id')->on('users');
             $table->timestamps();

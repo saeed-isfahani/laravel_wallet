@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ApprovePaymentEvent;
-use App\Events\CreatePaymentEvent;
+use App\Enums\Payments\PaymentStatus;
+use App\Events\PaymentApproved;
+use App\Events\PaymentCreated;
 use App\Events\RejectPaymentEvent;
-use App\Http\Requests\StorepaymentRequest;
+use App\Http\Requests\StorePaymentRequest;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class PaymentController extends Controller
 {
@@ -23,25 +23,27 @@ class PaymentController extends Controller
     public function index()
     {
         $payments = Payment::paginate();
+        // TODO resolve pagination problem in collection and response
         return $this->successResponse(new PaymentCollection($payments), 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorepaymentRequest $request)
+    public function store(StorePaymentRequest $request)
     {
         $paymentLimitationTime = 5;
-        $lastPayment = Payment::where('user_id', $request->user_id)
-            ->where('currency', $request->currency)
+        $paymentInLimitationTime = Payment::where('user_id', $request->user_id)
+            ->where('currency_key', $request->currency_key)
             ->where('created_at', '>', Carbon::now()->subMinutes($paymentLimitationTime)->toDateTimeString())
-            ->first();
-        if ($lastPayment) {
-            throw new BadRequestException(__('payment.errors.payment_creation_time_limit', ['currency' => $request->currency, 'minute' => $paymentLimitationTime]), 400);
+            ->exists();
+        if ($paymentInLimitationTime) {
+            throw new BadRequestException(__('payment.errors.payment_creation_time_limit', ['currency' => $request->currency_key, 'minute' => $paymentLimitationTime]));
         }
-
-        if ($payment = Payment::create(array_merge($request->all(), ['user_id' => 1]))) {
-            CreatePaymentEvent::dispatch($payment);
+        // TODO don't need to if because of using route model binding
+        if ($payment = Payment::create($request->all())) {
+            PaymentCreated::dispatch($payment);
+            // TODO make it as a service fecade
             return $this->successResponse(new PaymentResource($payment), __('payment.messages.create_successfull'), 201);
         }
     }
@@ -52,10 +54,12 @@ class PaymentController extends Controller
     public function show(String $uniqueId)
     {
         $payment = Payment::firstWhere('unique_id', $uniqueId);
+
         if ($payment) {
             return $this->successResponse(new PaymentResource($payment), __('payment.messages.found_successfull'), 200);
         }
-        throw new BadRequestException(__('payment.errors.not_found'), 400);
+
+        throw new BadRequestException(__('payment.errors.not_found'));
     }
 
     /**
@@ -66,17 +70,21 @@ class PaymentController extends Controller
         $payment = Payment::firstWhere('unique_id', $uniqueId);
 
         if (!$payment) {
-            throw new BadRequestException(__('payment.errors.not_found'), 400);
+            throw new BadRequestException(__('payment.errors.not_found'));
         }
 
-        if ($payment->status->value != 'pending') {
-            throw new BadRequestException(__('payment.errors.not_pending'), 400);
+        if ($payment->status != PaymentStatus::PENDING) {
+            throw new BadRequestException(__('payment.errors.not_pending'));
         }
-        $payment->status = 'approved';
-        $payment->status_update_at = Carbon::now();
-        $payment->status_update_by = 1;
-        $payment->save();
-        ApprovePaymentEvent::dispatch($payment);
+
+        $payment->update([
+            'status' => PaymentStatus::APPROVED->value,
+            'status_update_at' => Carbon::now(),
+            'status_update_by' => auth()->user()->id
+        ]);
+
+        PaymentApproved::dispatch($payment);
+
         return $this->successResponse(new PaymentResource($payment), __('payment.messages.approve_successfull'), 200);
     }
 
@@ -87,17 +95,18 @@ class PaymentController extends Controller
     {
         $payment = Payment::firstWhere('unique_id', $uniqueId);
         if (!$payment) {
-            throw new BadRequestException(__('payment.errors.not_found'), 400);
+            throw new BadRequestException(__('payment.errors.not_found'));
         }
 
-        if ($payment->status->value != 'pending') {
-            throw new BadRequestException(__('payment.errors.not_pending'), 400);
+        if ($payment->status != PaymentStatus::PENDING) {
+            throw new BadRequestException(__('payment.errors.not_pending'));
         }
 
-        $payment->status = 'rejected';
-        $payment->status_update_at = Carbon::now();
-        $payment->status_update_by = 1;
-        $payment->save();
+        $payment->update([
+            'status' => PaymentStatus::REJECTED->value,
+            'status_update_at' => Carbon::now(),
+            'status_update_by' => auth()->user()->id
+        ]);
         RejectPaymentEvent::dispatch($payment);
         return $this->successResponse(new PaymentResource($payment), __('payment.messages.reject_successfull'), 200);
     }

@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\Payments\Status;
+use App\Enums\Payments\PaymentStatus;
 use Illuminate\Support\Str;
 
 class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'amount', 'status', 'currency'];
+    protected $fillable = ['user_id', 'amount', 'status', 'currency_key'];
 
     public function user()
     {
@@ -19,7 +19,7 @@ class Payment extends Model
     }
 
     protected $casts = [
-        'status' => Status::class
+        'status' => PaymentStatus::class
     ];
 
     protected static function booted()

@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateCurrencyRequest;
 use App\Http\Resources\CurrencyCollection;
 use App\Http\Resources\CurrencyResource;
 use App\Models\Currency;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CurrencyController extends Controller
 {
@@ -36,7 +36,7 @@ class CurrencyController extends Controller
     public function store(StoreCurrencyRequest $request)
     {
         if (Currency::firstWhere('key', $request->key)) {
-            throw new BadRequestHttpException(__('currency.errors.duplicate_key'), null, 400);
+            throw new BadRequestException(__('currency.errors.duplicate_key'));
         }
 
         if ($currency = Currency::create($request->all())) {

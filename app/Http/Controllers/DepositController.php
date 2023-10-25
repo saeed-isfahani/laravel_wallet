@@ -27,7 +27,7 @@ class DepositController extends Controller
             throw new BadRequestException(__('deposit.errors.to_user_not_exist'), 400);
         }
 
-        $fromUserBalance = $fromUser->getBalance($request->currency);
+        $fromUserBalance = $fromUser->getBalance($request->currency_key);
         if ($fromUserBalance < $request->amount) {
             DB::rollBack();
             throw new BadRequestException(__('deposit.errors.from_user_balance_lower_than_transfer_amount'), 400);
@@ -39,16 +39,16 @@ class DepositController extends Controller
         $fromUserTransactionData = [
             'user_id' => $request->from_user,
             'amount' => -$request->amount,
-            'currency' => $request->currency,
+            'currency_key' => $request->currency_key,
             'balance' => ($fromUserBalance - $request->amount),
         ];
         Transaction::create($fromUserTransactionData);
 
-        $toUserBalance = $toUser->getBalance($request->currency);
+        $toUserBalance = $toUser->getBalance($request->currency_key);
         $toTransactionData = [
             'user_id' => $request->to_user,
             'amount' => $request->amount,
-            'currency' => $request->currency,
+            'currency_key' => $request->currency_key,
             'balance' => ($toUserBalance + $request->amount),
         ];
         Transaction::create($toTransactionData);

@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Payments\Status;
+use App\Enums\Payments\PaymentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class StorepaymentRequest extends FormRequest
+// TODO check request method (exm: POST) and it should just be post
+class StorePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +25,10 @@ class StorepaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => ['required', 'numeric'],
-            'status' => ['required', new Enum(Status::class)],
-            'currency' => ['required'],
+            // TODO ? use min-max for amount
+            'amount' => ['required', 'numeric', 'between:1,9999999999999'],
+            // TODO ? use role validation to checking currency is_active
+            'currency_key' => ['required', 'exists:currencies,key'],
         ];
     }
 }

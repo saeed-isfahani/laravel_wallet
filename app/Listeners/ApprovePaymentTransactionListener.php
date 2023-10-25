@@ -31,7 +31,7 @@ class ApprovePaymentTransactionListener implements ShouldQueue
             'user_id' => 1,
             'payment_id' => $event->payment->id,
             'amount' => $event->payment->amount,
-            'currency' => $event->payment->currency,
+            'currency_key' => $event->payment->currency_key,
             'balance' => ($balance + $event->payment->amount)
         ];
         Transaction::create($transactionData);

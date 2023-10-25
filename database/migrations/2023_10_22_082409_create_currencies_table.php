@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('key')->unique();
             $table->string('symbol');
             $table->string('iso_code');
-            $table->boolean('is_active');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

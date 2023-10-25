@@ -22,15 +22,16 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::prefix('v1')->middleware('localization')->group(function () {
-    Route::post('/payment', [PaymentController::class, 'store']);
-    Route::get('/payment/{unique_id}', [PaymentController::class, 'show']);
-    Route::get('/payment', [PaymentController::class, 'index']);
-    Route::patch('/payment/{unique_id}/approve', [PaymentController::class, 'approve']);
-    Route::patch('/payment/{unique_id}/reject', [PaymentController::class, 'reject']);
-    Route::post('/currency', [CurrencyController::class, 'store']);
-    Route::get('/currency', [CurrencyController::class, 'index']);
-    Route::post('/deposit/transfer', [DepositController::class, 'transfer']);
+Route::prefix('v1')->group(function () {
+    Route::post('/payments', [PaymentController::class, 'store']);
+    // TODO use Route Model binding for unique_id and change default field in model for all end points
+    Route::get('/payments/{unique_id}', [PaymentController::class, 'show']);
+    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::patch('/payments/{unique_id}/approve', [PaymentController::class, 'approve']);
+    Route::patch('/payments/{unique_id}/reject', [PaymentController::class, 'reject']);
+    Route::post('/currencies', [CurrencyController::class, 'store']);
+    Route::get('/currencies', [CurrencyController::class, 'index']);
+    Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
 });
 
 Route::group([

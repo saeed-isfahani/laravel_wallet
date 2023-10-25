@@ -22,9 +22,8 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => ['required', 'numeric'],
-            'currency' => ['required'],
-            'balance' => ['required', 'numeric'],
+            'amount' => ['required', 'numeric', 'between:1,9999999999999'],
+            'currency_key' => ['required', 'exists:currencies,key'],
         ];
     }
 }

@@ -81,9 +81,9 @@ class User extends Authenticatable implements JWTSubject
     public function updateBalance(): collection
     {
         $totalAmount = $this->transactions()
-            ->select('currency', DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('currency')
-            ->pluck('total_amount', 'currency');
+            ->select('currency_key', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('currency_key')
+            ->pluck('total_amount', 'currency_key');
 
         $this->update([
             'balance' => json_encode($totalAmount->jsonSerialize())
@@ -95,7 +95,7 @@ class User extends Authenticatable implements JWTSubject
     public function getBalance(String $currency): int
     {
         $totalAmount = $this->transactions()
-            ->where('currency', $currency)
+            ->where('currency_key', $currency)
             ->sum('amount');
 
         return $totalAmount;

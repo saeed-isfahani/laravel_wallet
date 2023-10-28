@@ -21,8 +21,8 @@ use App\Http\Controllers\AuthController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-
-Route::prefix('v1')->group(function () {
+// TODO handle redirect to login route method Error
+Route::prefix('v1')->middleware(['auth'])->group(function () {
     Route::post('/payments', [PaymentController::class, 'store']);
     // TODO use Route Model binding for unique_id and change default field in model for all end points
     Route::get('/payments/{unique_id}', [PaymentController::class, 'show']);
@@ -34,13 +34,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
 });
 
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'auth'
-], function ($router) {
-    Route::post('/login', [AuthController::class, 'login']);
+Route::prefix('auth')->middleware(['api'])->group(function ($router) {
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);    
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });

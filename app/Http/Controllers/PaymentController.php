@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 

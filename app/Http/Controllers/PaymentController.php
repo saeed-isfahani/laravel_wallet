@@ -10,8 +10,11 @@ use App\Http\Requests\StorePaymentRequest;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class PaymentController extends Controller
@@ -77,11 +80,27 @@ class PaymentController extends Controller
             throw new BadRequestException(__('payment.errors.not_pending'));
         }
 
+        DB::beginTransaction();
+
         $payment->update([
             'status' => PaymentStatus::APPROVED->value,
             'status_update_at' => Carbon::now(),
             'status_update_by' => auth()->user()->id
         ]);
+
+        $transactionOwner = User::find($payment->user_id);
+        $balance = $transactionOwner->getBalance($payment->user_id);
+        $transactionOwner->transactions()->lockForUpdate();
+        $transactionData = [
+            'user_id' => 1,
+            'payment_id' => $payment->id,
+            'amount' => $payment->amount,
+            'currency_key' => $payment->currency_key,
+            'balance' => ($balance + $payment->amount)
+        ];
+        Transaction::create($transactionData);
+
+        DB::commit();
 
         PaymentApproved::dispatch($payment);
 

@@ -7,7 +7,6 @@ use App\Events\PaymentApproved;
 use App\Events\RejectPaymentEvent;
 use App\Listeners\CreatePaymentEmailListener;
 use App\Listeners\ApprovePaymentEmailListener;
-use App\Listeners\ApprovePaymentTransactionListener;
 use App\Listeners\RejectPaymentEmailListener;
 use App\Listeners\UpdateUserBalanceListener;
 use Illuminate\Auth\Events\Registered;
@@ -31,7 +30,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         PaymentApproved::class => [
             ApprovePaymentEmailListener::class,
-            ApprovePaymentTransactionListener::class,
             UpdateUserBalanceListener::class,
         ],
         RejectPaymentEvent::class => [

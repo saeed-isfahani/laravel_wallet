@@ -22,6 +22,11 @@ class Payment extends Model
         'status' => PaymentStatus::class
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'unique_id';
+    }
+
     protected static function booted()
     {
         static::creating(function ($payment) {

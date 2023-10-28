@@ -45,7 +45,7 @@ class PaymentController extends Controller
         if ($paymentInLimitationTime) {
             throw new BadRequestException(__('payment.errors.payment_creation_time_limit', ['currency' => $request->currency_key, 'minute' => $paymentLimitationTime]));
         }
-        // TODO don't need to if because of using route model binding
+        // TODO ?? don't need to if because of using route model binding
         if ($payment = Payment::create($request->all())) {
             PaymentCreated::dispatch($payment);
             return ApiResponse::data(new PaymentResource($payment))
@@ -57,14 +57,9 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(String $uniqueId)
+    public function show(Payment $payment)
     {
-        $payment = Payment::firstWhere('unique_id', $uniqueId);
-
-        if (!$payment) {
-            throw new BadRequestException(__('payment.errors.not_found'));
-        }
-
+        // TODO handle 404 error for route model binding not found errors (it seems related to exeptions problem)
         return ApiResponse::data(new PaymentResource($payment))
             ->message(__('payment.messages.found_successfull'))
             ->send(200);
@@ -73,14 +68,8 @@ class PaymentController extends Controller
     /**
      * approve the specified Payment from storage.
      */
-    public function approve(String $uniqueId)
+    public function approve(Payment $payment)
     {
-        $payment = Payment::firstWhere('unique_id', $uniqueId);
-
-        if (!$payment) {
-            throw new BadRequestException(__('payment.errors.not_found'));
-        }
-
         if ($payment->status != PaymentStatus::PENDING) {
             throw new BadRequestException(__('payment.errors.not_pending'));
         }
@@ -96,14 +85,13 @@ class PaymentController extends Controller
         $transactionOwner = User::find($payment->user_id);
         $balance = $transactionOwner->getBalance($payment->user_id);
         $transactionOwner->transactions()->lockForUpdate();
-        $transactionData = [
+        Transaction::create([
             'user_id' => $payment->user_id,
             'payment_id' => $payment->id,
             'amount' => $payment->amount,
             'currency_key' => $payment->currency_key,
             'balance' => ($balance + $payment->amount)
-        ];
-        Transaction::create($transactionData);
+        ]);
 
         DB::commit();
 
@@ -117,13 +105,8 @@ class PaymentController extends Controller
     /**
      * reject the specified Payment from storage.
      */
-    public function reject(String $uniqueId)
+    public function reject(Payment $payment)
     {
-        $payment = Payment::firstWhere('unique_id', $uniqueId);
-        if (!$payment) {
-            throw new BadRequestException(__('payment.errors.not_found'));
-        }
-
         if ($payment->status != PaymentStatus::PENDING) {
             throw new BadRequestException(__('payment.errors.not_pending'));
         }

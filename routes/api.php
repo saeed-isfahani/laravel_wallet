@@ -22,13 +22,13 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 // TODO handle redirect to login route method Error
-Route::prefix('v1')->middleware(['auth'])->group(function () {
-    Route::post('/payments', [PaymentController::class, 'store']);
+Route::prefix('v1')->group(function () {
+    Route::post('/paym        $transactionData = ;ents', [PaymentController::class, 'store']);
     // TODO use Route Model binding for unique_id and change default field in model for all end points
-    Route::get('/payments/{unique_id}', [PaymentController::class, 'show']);
+    Route::get('/payments/{payment}', [PaymentController::class, 'show']);
     Route::get('/payments', [PaymentController::class, 'index']);
-    Route::patch('/payments/{unique_id}/approve', [PaymentController::class, 'approve']);
-    Route::patch('/payments/{unique_id}/reject', [PaymentController::class, 'reject']);
+    Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve']);
+    Route::patch('/payments/{payment}/reject', [PaymentController::class, 'reject']);
     Route::post('/currencies', [CurrencyController::class, 'store']);
     Route::get('/currencies', [CurrencyController::class, 'index']);
     Route::post('/deposits/transfer', [DepositController::class, 'transfer']);

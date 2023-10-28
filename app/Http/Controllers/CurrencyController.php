@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\ApiResponse;
+use App\Facades\ApiResponse;
 use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
 use App\Http\Resources\CurrencyCollection;
@@ -12,14 +12,15 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CurrencyController extends Controller
 {
-    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $currencies = Currency::paginate();
-        return $this->successResponse(new CurrencyCollection($currencies), 200);
+        return ApiResponse::data(new CurrencyCollection($currencies))
+            ->message('')
+            ->send(200);
     }
 
     /**
@@ -40,7 +41,9 @@ class CurrencyController extends Controller
         }
 
         if ($currency = Currency::create($request->all())) {
-            return $this->successResponse(new CurrencyResource($currency), __('currency.messages.create_successfull'), 201);
+            return ApiResponse::data(new CurrencyResource($currency))
+                ->message(__('currency.messages.create_successfull'))
+                ->send(201);
         }
     }
 

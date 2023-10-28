@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\ApiResponse;
 use App\Http\Requests\DepositRequest;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class DepositController extends Controller
 {
-    use ApiResponse;
     public function transfer(DepositRequest $request)
     {
         DB::beginTransaction();
@@ -32,7 +31,7 @@ class DepositController extends Controller
             DB::rollBack();
             throw new BadRequestException(__('deposit.errors.from_user_balance_lower_than_transfer_amount'), 400);
         }
-        
+
         $fromUser->transactions()->lockForUpdate();
         $toUser->transactions()->lockForUpdate();
 
@@ -57,7 +56,9 @@ class DepositController extends Controller
         $toUser->updateBalance();
 
         DB::commit();
-        
-        return $this->successResponse([], __('deposit.messages.deposit_transfer_successfull'), 201);
+
+        return ApiResponse::data([])
+            ->message(__('deposit.messages.deposit_transfer_successfull'))
+            ->send(201);
     }
 }

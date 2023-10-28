@@ -6,13 +6,13 @@ use App\Enums\Payments\PaymentStatus;
 use App\Events\PaymentApproved;
 use App\Events\PaymentCreated;
 use App\Events\RejectPaymentEvent;
+use App\Facades\ApiResponse;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Resources\PaymentCollection;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Traits\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class PaymentController extends Controller
 {
-    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +27,9 @@ class PaymentController extends Controller
     {
         $payments = Payment::paginate();
         // TODO resolve pagination problem in collection and response
-        return $this->successResponse(new PaymentCollection($payments), 200);
+        return ApiResponse::data(new PaymentCollection($payments))
+            ->message('')
+            ->send();
     }
 
     /**
@@ -47,8 +48,9 @@ class PaymentController extends Controller
         // TODO don't need to if because of using route model binding
         if ($payment = Payment::create($request->all())) {
             PaymentCreated::dispatch($payment);
-            // TODO make it as a service fecade
-            return $this->successResponse(new PaymentResource($payment), __('payment.messages.create_successfull'), 201);
+            return ApiResponse::data(new PaymentResource($payment))
+                ->message(__('payment.messages.create_successfull'))
+                ->send(201);
         }
     }
 
@@ -59,11 +61,13 @@ class PaymentController extends Controller
     {
         $payment = Payment::firstWhere('unique_id', $uniqueId);
 
-        if ($payment) {
-            return $this->successResponse(new PaymentResource($payment), __('payment.messages.found_successfull'), 200);
+        if (!$payment) {
+            throw new BadRequestException(__('payment.errors.not_found'));
         }
 
-        throw new BadRequestException(__('payment.errors.not_found'));
+        return ApiResponse::data(new PaymentResource($payment))
+            ->message(__('payment.messages.found_successfull'))
+            ->send(200);
     }
 
     /**
@@ -93,7 +97,7 @@ class PaymentController extends Controller
         $balance = $transactionOwner->getBalance($payment->user_id);
         $transactionOwner->transactions()->lockForUpdate();
         $transactionData = [
-            'user_id' => 1,
+            'user_id' => $payment->user_id,
             'payment_id' => $payment->id,
             'amount' => $payment->amount,
             'currency_key' => $payment->currency_key,
@@ -105,7 +109,9 @@ class PaymentController extends Controller
 
         PaymentApproved::dispatch($payment);
 
-        return $this->successResponse(new PaymentResource($payment), __('payment.messages.approve_successfull'), 200);
+        return ApiResponse::data(new PaymentResource($payment))
+            ->message(__('payment.messages.approve_successfull'))
+            ->send(200);
     }
 
     /**
@@ -128,6 +134,8 @@ class PaymentController extends Controller
             'status_update_by' => auth()->user()->id
         ]);
         RejectPaymentEvent::dispatch($payment);
-        return $this->successResponse(new PaymentResource($payment), __('payment.messages.reject_successfull'), 200);
+        return ApiResponse::data(new PaymentResource($payment))
+            ->message(__('payment.messages.reject_successfull'))
+            ->send(200);
     }
 }

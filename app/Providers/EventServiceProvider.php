@@ -9,6 +9,8 @@ use App\Listeners\CreatePaymentEmailListener;
 use App\Listeners\ApprovePaymentEmailListener;
 use App\Listeners\RejectPaymentEmailListener;
 use App\Listeners\UpdateUserBalanceListener;
+use App\Models\Transaction;
+use App\Observers\TransactionObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -42,7 +44,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Transaction::observe(TransactionObserver::class);
     }
 
     /**

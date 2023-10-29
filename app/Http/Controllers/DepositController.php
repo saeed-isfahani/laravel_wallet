@@ -52,9 +52,6 @@ class DepositController extends Controller
         ];
         Transaction::create($toTransactionData);
 
-        $fromUser->updateBalance();
-        $toUser->updateBalance();
-
         DB::commit();
 
         return ApiResponse::data([])

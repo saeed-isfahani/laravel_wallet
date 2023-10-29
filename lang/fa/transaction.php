@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | General Language Lines
+    | Payment Language Lines
     |--------------------------------------------------------------------------
     |
     |
@@ -14,9 +14,7 @@ return [
     'messages' => [],
     'validations' => [],
     'errors' => [
-        'HTTP_INTERNAL_SERVER_ERROR' => 'server error accured. please contact the administrator.',
-        'HTTP_NOT_FOUND' => 'the endpoint or data not found',
-        'HTTP_BAD_REQUEST' => 'you send bad data or request'
+        'transaction_creating_error_user_not_found' => 'به دلیل پیدا نشدن کاربر مربوطه تراکنش ایجاد نشد'
     ],
 
 ];

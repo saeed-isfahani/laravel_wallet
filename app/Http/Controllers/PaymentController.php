@@ -59,10 +59,24 @@ class PaymentController extends Controller implements PaymentControllerInterface
      */
     public function show(Payment $payment)
     {
-        // TODO handle 404 error for route model binding not found errors (it seems related to exeptions problem)
         return ApiResponse::data(new PaymentResource($payment))
             ->message(__('payment.messages.found_successfull'))
             ->send(200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Payment $payment)
+    {
+        if (!in_array($payment->status, [PaymentStatus::PENDING])) {
+            throw new BadRequestException(__('payment.errors.payment_cant_delete'));
+        }
+
+        $payment->delete();
+
+        return ApiResponse::message(__('payment.messages.payment_successfully_delete'))
+            ->send();
     }
 
     /**

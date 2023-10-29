@@ -23,15 +23,14 @@ use App\Http\Controllers\AuthController;
 // });
 // TODO handle redirect to login route method Error
 Route::prefix('v1')->group(function () {
-    Route::post('/payments', [PaymentController::class, 'store']);
-    Route::get('/payments/{payment}', [PaymentController::class, 'show']);
-    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::resource('payments', PaymentController::class)->except(['update']);
     Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve']);
     Route::patch('/payments/{payment}/reject', [PaymentController::class, 'reject']);
-    Route::post('/currencies', [CurrencyController::class, 'store']);
-    Route::get('/currencies', [CurrencyController::class, 'index']);
+
+    Route::resource('currencies', CurrencyController::class)->only(['index', 'store']);
     Route::patch('/currencies/{currency}/active', [CurrencyController::class, 'active']);
     Route::patch('/currencies/{currency}/deactive', [CurrencyController::class, 'deactive']);
+
     Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
 });
 

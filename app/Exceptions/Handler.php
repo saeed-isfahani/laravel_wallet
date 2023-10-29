@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Traits\ApiResponse;
+use App\Facades\ApiResponse;
 use BadMethodCallException;
 use ErrorException;
 use Exception;
@@ -10,16 +10,16 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Validator as ValidationValidator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
-    //     use ApiResponse;
     //     /**
     //      * The list of the inputs that are never flashed to the session on validation exceptions.
     //      *
@@ -166,5 +166,32 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, $exception)
+    {
+
+        if ($exception instanceof BadRequestException) {
+            $error = $exception->getMessage();
+
+            return ApiResponse::data([])->errors($error)->send(Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($exception instanceof ValidationException) {
+
+            $errors = $exception->validator->errors();
+
+            return ApiResponse::data([])->errors($errors)->send(Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ($exception instanceof NotFoundHttpException) {
+
+            $errors = [$exception->getMessage()];
+
+            return ApiResponse::data([])->errors($errors)->send(Response::HTTP_NOT_FOUND);
+        }
+
+        $errors = [__('general.errors.HTTP_INTERNAL_SERVER_ERROR')];
+        return ApiResponse::data([])->errors($errors)->send(Response::HTTP_INTERNAL_SERVER_ERROR);;
     }
 }

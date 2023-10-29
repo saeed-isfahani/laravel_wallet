@@ -25,7 +25,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
      */
     public function index()
     {
-        $payments = Payment::paginate();
+        $payments = Payment::paginate(config('settings.pagination.items_per_page'));
         return ApiResponse::data(new PaymentCollection($payments))
             ->message('')
             ->send();
@@ -36,12 +36,12 @@ class PaymentController extends Controller implements PaymentControllerInterface
      */
     public function store(StorePaymentRequest $request)
     {
-        $paymentLimitationTime = 5;
+        $paymentLimitationTime = config('settings.payments.payment_creation_time_limit');
         $paymentInLimitationTime = Payment::where('user_id', $request->user_id)
             ->where('currency_key', $request->currency_key)
             ->where('created_at', '>', Carbon::now()->subMinutes($paymentLimitationTime)->toDateTimeString())
             ->exists();
-            
+
         if ($paymentInLimitationTime) {
             throw new BadRequestException(__('payment.errors.payment_creation_time_limit', ['currency' => $request->currency_key, 'minute' => $paymentLimitationTime]));
         }

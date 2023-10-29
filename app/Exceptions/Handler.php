@@ -11,6 +11,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Validator as ValidationValidator;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -189,6 +190,13 @@ class Handler extends ExceptionHandler
             $errors = [$exception->getMessage()];
 
             return ApiResponse::data([])->errors($errors)->send(Response::HTTP_NOT_FOUND);
+        }
+
+        if ($exception instanceof UnauthorizedException) {
+
+            $errors = [$exception->getMessage()];
+
+            return ApiResponse::data([])->errors($errors)->send(Response::HTTP_UNAUTHORIZED);
         }
 
         $errors = [__('general.errors.HTTP_INTERNAL_SERVER_ERROR')];

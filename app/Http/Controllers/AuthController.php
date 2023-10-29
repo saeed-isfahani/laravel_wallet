@@ -1,5 +1,8 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Facades\ApiResponse;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -80,7 +83,9 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function userProfile() {
-        return response()->json(auth()->user());
+        return ApiResponse::data(new UserResource(auth()->user()))
+            ->message('')
+            ->send(200);
     }
     /**
      * Get the token array structure.

@@ -25,7 +25,6 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // TODO ? use min-max for amount
             'amount' => ['required', 'numeric', 'between:1,9999999999999'],
             // TODO ? use role validation to checking currency is_active
             'currency_key' => ['required', 'exists:currencies,key'],

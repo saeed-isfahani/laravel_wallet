@@ -24,7 +24,6 @@ use App\Http\Controllers\AuthController;
 // TODO handle redirect to login route method Error
 Route::prefix('v1')->group(function () {
     Route::post('/payments', [PaymentController::class, 'store']);
-    // TODO use Route Model binding for unique_id and change default field in model for all end points
     Route::get('/payments/{payment}', [PaymentController::class, 'show']);
     Route::get('/payments', [PaymentController::class, 'index']);
     Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve']);

@@ -26,7 +26,6 @@ class PaymentController extends Controller implements PaymentControllerInterface
     public function index()
     {
         $payments = Payment::paginate();
-        // TODO resolve pagination problem in collection and response
         return ApiResponse::data(new PaymentCollection($payments))
             ->message('')
             ->send();

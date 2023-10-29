@@ -27,7 +27,6 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'amount' => ['required', 'numeric', 'between:1,9999999999999'],
-            // TODO ? use role validation to checking currency is_active
             'currency_key' => ['required', new CheckCurrencyExistsAndActive()],
         ];
     }

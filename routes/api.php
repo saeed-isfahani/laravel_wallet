@@ -30,6 +30,8 @@ Route::prefix('v1')->group(function () {
     Route::patch('/payments/{payment}/reject', [PaymentController::class, 'reject']);
     Route::post('/currencies', [CurrencyController::class, 'store']);
     Route::get('/currencies', [CurrencyController::class, 'index']);
+    Route::patch('/currencies/{currency}/active', [CurrencyController::class, 'active']);
+    Route::patch('/currencies/{currency}/deactive', [CurrencyController::class, 'deactive']);
     Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
 });
 

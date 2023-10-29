@@ -10,4 +10,9 @@ class Currency extends Model
     use HasFactory;
 
     protected $fillable = ['key', 'symbol', 'iso_code', 'is_active'];
+
+    public function getRouteKeyName()
+    {
+        return 'key';
+    }
 }

@@ -22,7 +22,7 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 // TODO handle redirect to login route method Error
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware(['auth', 'throttle:50,1'])->group(function () {
     Route::resource('payments', PaymentController::class)->except(['update']);
     Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve']);
     Route::patch('/payments/{payment}/reject', [PaymentController::class, 'reject']);
@@ -34,7 +34,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
 });
 
-Route::prefix('auth')->middleware(['api'])->group(function ($router) {
+Route::prefix('auth')->middleware(['api', 'throttle:50,1'])->group(function ($router) {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);

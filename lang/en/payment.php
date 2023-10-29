@@ -21,7 +21,8 @@ return [
     'errors' => [
         'not_found' => 'payment not found',
         'not_pending' => 'payment is not in pending status',
-        'payment_creation_time_limit' => 'a payment in :currency created less than :minute minutes ago for this user, try again later please'
+        'payment_creation_time_limit' => 'a payment in :currency created less than :minute minutes ago for this user, try again later please',
+        'currency_key_not_found_or_deactive' => 'sended urrency key not found or deactive'
     ],
 
 ];

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\Payments\PaymentStatus;
+use App\Rules\CheckCurrencyExistsAndActive;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -27,7 +28,7 @@ class StorePaymentRequest extends FormRequest
         return [
             'amount' => ['required', 'numeric', 'between:1,9999999999999'],
             // TODO ? use role validation to checking currency is_active
-            'currency_key' => ['required', 'exists:currencies,key'],
+            'currency_key' => ['required', new CheckCurrencyExistsAndActive()],
         ];
     }
 }

@@ -18,7 +18,7 @@ class CurrencyController extends Controller implements CurrencyControllerInterfa
      */
     public function index()
     {
-        $currencies = Currency::paginate();
+        $currencies = Currency::paginate(config('settings.pagination.items_per_page'));
         return ApiResponse::data(new CurrencyCollection($currencies))
             ->message('')
             ->send(200);

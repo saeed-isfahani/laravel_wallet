@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Swagger\Api\V1;
+namespace App\Interfaces\Controllers\V1;
 
-// TODO change it to controller interface (laravel contracts) and move these codes to it
-class PaymentController
+use App\Http\Requests\StorePaymentRequest;
+use App\Models\Payment;
+
+interface PaymentControllerInterface
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      * @OA\Get(
-     *     path="/api/v1/payment",
+     *     path="/api/v1/payments",
      *     operationId="getListPayment",
      *     tags={"Payment"},
      *     summary="summary",
@@ -27,10 +29,7 @@ class PaymentController
      *     @OA\Response(response=404,description="Resource Not Found")
      * )
      */
-    public function index()
-    {
-        //
-    }
+    public function index();
 
 
     /**
@@ -38,7 +37,7 @@ class PaymentController
      *
      * @return \Illuminate\Http\Response
      * @OA\Get(
-     *     path="/api/v1/payment/{id}",
+     *     path="/api/v1/payments/{id}",
      *     operationId="showPayment",
      *     tags={"Payment"},
      *     summary="get payment info",
@@ -64,9 +63,7 @@ class PaymentController
      *      @OA\Response(response=404,description="Resource Not Found")
      * )
      */
-    public function show()
-    {
-    }
+    public function show(Payment $payment);
 
 
     /**
@@ -74,7 +71,7 @@ class PaymentController
      *
      * @return \Illuminate\Http\Response
      * @OA\Post(
-     *     path="/api/v1/payment",
+     *     path="/api/v1/payments",
      *     operationId="storePayment",
      *     tags={"Payment"},
      *     summary="payment",
@@ -103,24 +100,14 @@ class PaymentController
      *      @OA\Response(response=404,description="Resource Not Found")
      * )
      */
-    public function store()
-    {
-    }
-
-    public function update()
-    {
-    }
-
-    public function destroy()
-    {
-    }
+    public function store(StorePaymentRequest $request);
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      * @OA\Patch(
-     *     path="/api/v1/payment/{id}/reject",
+     *     path="/api/v1/payments/{id}/reject",
      *     operationId="rejectPayment",
      *     tags={"Payment"},
      *     summary="payment",
@@ -145,16 +132,14 @@ class PaymentController
      *      @OA\Response(response=404,description="Resource Not Found")
      * )
      */
-    public function reject()
-    {
-    }
+    public function reject(Payment $payment);
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      * @OA\Patch(
-     *     path="/api/v1/payment/{id}/approve",
+     *     path="/api/v1/payments/{id}/approve",
      *     operationId="approvePayment",
      *     tags={"Payment"},
      *     summary="payment",
@@ -179,7 +164,5 @@ class PaymentController
      *      @OA\Response(response=404,description="Resource Not Found")
      * )
      */
-    public function approve()
-    {
-    }
+    public function approve(Payment $payment);
 }

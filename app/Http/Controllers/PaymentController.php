@@ -14,11 +14,11 @@ use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use App\Interfaces\Controllers\v1\PaymentControllerInterface;
 
-class PaymentController extends Controller
+class PaymentController extends Controller implements PaymentControllerInterface
 {
     /**
      * Display a listing of the resource.

@@ -9,8 +9,9 @@ use App\Http\Resources\CurrencyCollection;
 use App\Http\Resources\CurrencyResource;
 use App\Models\Currency;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use App\Interfaces\Controllers\v1\CurrencyControllerInterface;
 
-class CurrencyController extends Controller
+class CurrencyController extends Controller implements CurrencyControllerInterface
 {
     /**
      * Display a listing of the resource.
@@ -21,14 +22,6 @@ class CurrencyController extends Controller
         return ApiResponse::data(new CurrencyCollection($currencies))
             ->message('')
             ->send(200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -45,37 +38,5 @@ class CurrencyController extends Controller
                 ->message(__('currency.messages.create_successfull'))
                 ->send(201);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Currency $currency)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Currency $currency)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatecurrencyRequest $request, Currency $currency)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Currency $currency)
-    {
-        //
     }
 }

@@ -15,8 +15,6 @@ class PaymentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // TODO ? (how could we done this from model?) TODO remove id from all entity resources
-            "id" => $this->id,
             "user" => new UserResource($this->user),
             "amount" => $this->amount,
             "status" => $this->status,

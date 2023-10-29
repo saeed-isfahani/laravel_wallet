@@ -11,6 +11,7 @@ class Currency extends Model
     use HasFactory;
 
     protected $fillable = ['key', 'symbol', 'iso_code', 'is_active'];
+    protected $hidden = ['id'];
 
     protected static function booted()
     {

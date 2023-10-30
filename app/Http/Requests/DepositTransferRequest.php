@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DepositRequest extends FormRequest
+class DepositTransferRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -12,6 +12,13 @@ class DepositRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+        return in_array($this->method(), $this->allowedMethods());
+    }
+
+
+    public function allowedMethods(): array
+    {
+        return ['POST'];
     }
 
     /**

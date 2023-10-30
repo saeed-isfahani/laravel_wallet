@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\ApiResponse;
-use App\Http\Requests\DepositRequest;
+use App\Http\Requests\DepositTransferRequest;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class DepositController extends Controller
 {
-    public function transfer(DepositRequest $request)
+    public function transfer(DepositTransferRequest $request)
     {
         DB::beginTransaction();
 

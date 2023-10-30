@@ -16,6 +16,13 @@ class StorePaymentRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+        return in_array($this->method(), $this->allowedMethods());
+    }
+
+
+    public function allowedMethods(): array
+    {
+        return ['POST'];
     }
 
     /**

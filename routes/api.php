@@ -22,22 +22,27 @@ use App\Http\Controllers\AuthController;
 //     return $request->user();
 // });
 
-Route::prefix('v1')->middleware(['auth', 'throttle:50,1'])->group(function () {
-    Route::resource('payments', PaymentController::class)->except(['update']);
-    Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve']);
-    Route::patch('/payments/{payment}/reject', [PaymentController::class, 'reject']);
+Route::prefix('v1')->middleware(['throttle:5,1'])->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::resource('payments', PaymentController::class)->except(['update']);
+        Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve']);
+        Route::patch('/payments/{payment}/reject', [PaymentController::class, 'reject']);
 
-    Route::resource('currencies', CurrencyController::class)->only(['index', 'store']);
-    Route::patch('/currencies/{currency}/active', [CurrencyController::class, 'active']);
-    Route::patch('/currencies/{currency}/deactive', [CurrencyController::class, 'deactive']);
+        Route::resource('currencies', CurrencyController::class)->only(['index', 'store']);
+        Route::patch('/currencies/{currency}/active', [CurrencyController::class, 'active']);
+        Route::patch('/currencies/{currency}/deactive', [CurrencyController::class, 'deactive']);
 
-    Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
-});
+        Route::post('/deposits/transfer', [DepositController::class, 'transfer']);
 
-Route::prefix('auth')->middleware(['api', 'throttle:50,1'])->group(function ($router) {
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth']);
-    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware(['auth']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware(['auth']);
+        Route::prefix('auth')->group(function () {
+            Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth']);
+            Route::get('/user-profile', [AuthController::class, 'userProfile'])->middleware(['auth']);
+        });
+    });
+
+    Route::prefix('auth')->group(function () {
+        Route::post('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/refresh', [AuthController::class, 'refresh'])->middleware(['auth']);
+    });
 });

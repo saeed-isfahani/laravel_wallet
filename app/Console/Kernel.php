@@ -14,8 +14,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\DeleteDeprecatedPaymentCommand::class,
+        Commands\FetchAndFillRatesCommand::class,
     ];
-    
+
     /**
      * Define the application's command schedule.
      */
@@ -23,6 +24,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('app:delete-deprecated-payment')
             ->dailyAt('00:00');
+        $schedule->command('app:fetch-and-fill-rates-command')
+            ->dailyAt('12:00');
     }
 
     /**
@@ -30,7 +33,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

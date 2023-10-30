@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->uuid('unique_id');
-            $table->foreignId('user_id')->nullable(true)->references('id')->on('users');
+            $table->foreignId('user_id')->nullable(true)->references('id')->on('users')->onDelete('cascade');
             $table->double('amount');
             $table->enum('status', PaymentStatus::values())->default(PaymentStatus::PENDING);
             $table->string('currency_key');

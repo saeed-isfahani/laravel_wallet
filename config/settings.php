@@ -1,6 +1,12 @@
 <?php
 
 return array(
+    'apis' => array(
+        'navasan' => array(
+            'url' => 'http://api.navasan.tech/latest/?api_key=',
+            'key' => env('NAVASAN_API_KEY')
+        )
+    ),
     'pagination' => array(
         'items_per_page' => 1
     ),

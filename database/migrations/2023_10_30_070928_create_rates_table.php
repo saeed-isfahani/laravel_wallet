@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('rates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('payment_id')->references('id')->on('payments')->onDelete('cascade');
-            $table->double('amount');
             $table->string('currency_key');
             $table->foreign('currency_key')->references('key')->on('currencies')->onDelete('cascade')->onUpdate('cascade');
-            $table->double('balance');
+            $table->double('rate');
+            $table->string('equal_currency_key');
+            $table->foreign('equal_currency_key')->references('key')->on('currencies')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('rates');
     }
 };

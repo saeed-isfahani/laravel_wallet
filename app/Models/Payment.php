@@ -8,10 +8,11 @@ use App\Enums\Payments\PaymentStatus;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = ['user_id', 'amount', 'status', 'currency_key'];
     protected $hidden = ['id'];

@@ -46,7 +46,7 @@ class PaymentController extends Controller implements PaymentControllerInterface
             throw new BadRequestException(__('payment.errors.payment_creation_time_limit', ['currency' => $request->currency_key, 'minute' => $paymentLimitationTime]));
         }
 
-        if ($payment = Payment::create($request->all())) {
+        if ($payment = auth()->user()->payments()->create($request->all())) {
             PaymentCreated::dispatch($payment);
             return ApiResponse::data(new PaymentResource($payment))
                 ->message(__('payment.messages.create_successfull'))

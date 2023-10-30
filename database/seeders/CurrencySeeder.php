@@ -35,7 +35,7 @@ class CurrencySeeder extends Seeder
             [
                 'key' => 'lira',
                 'symbol' => '₺',
-                'iso_code' => 'trl',
+                'iso_code' => 'try',
                 'is_active' => 1
             ]
         ];

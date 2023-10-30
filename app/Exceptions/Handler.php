@@ -200,6 +200,13 @@ class Handler extends ExceptionHandler
             return ApiResponse::data([])->errors($errors)->send(Response::HTTP_UNAUTHORIZED);
         }
 
+        if ($exception instanceof AuthenticationException) {
+
+            $errors = [$exception->getMessage()];
+
+            return ApiResponse::data([])->errors($errors)->send(Response::HTTP_UNAUTHORIZED);
+        }
+
         $errors = [__('general.errors.HTTP_INTERNAL_SERVER_ERROR')];
         return ApiResponse::data([])->errors($errors)->send(Response::HTTP_INTERNAL_SERVER_ERROR);;
     }

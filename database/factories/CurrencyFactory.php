@@ -19,12 +19,10 @@ class CurrencyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => Str::random(5),
             'key' => Str::random(5),
             'symbol' => Str::random(5),
             'iso_code' => Str::random(5),
-            'is_active' => true,
-            'user_id' => User::factory()
+            'is_active' => true
         ];
     }
 }

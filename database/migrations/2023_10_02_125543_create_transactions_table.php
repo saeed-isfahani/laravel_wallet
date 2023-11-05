@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('payment_id')->references('id')->on('payments')->onDelete('cascade');
             $table->double('amount');
             $table->string('currency_key');
-            $table->foreign('currency_key')->references('key')->on('currencies')->onDelete('cascade')->onUpdate('cascade');
             $table->double('balance');
             $table->timestamps();
         });
